@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatRoom Pro - Enhanced</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #6e8efb;
+            --secondary: #a777e3;
+            --dark: #2c3e50;
+            --light: #f5f7ff;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --info: #3498db;
+            --gray: #95a5a6;
+            --white: #ffffff;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #333;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            background: rgba(255, 255, 255, 0.97);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+            position: relative;
+        }
+        
+        /* Login Screen */
+        #login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            height: 100%;
+        }
+        
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+        }
+        
+        .tagline {
+            color: var(--dark);
+            font-size: 18px;
+        }
+        
+        .login-form {
+            width: 100%;
+            max-width: 400px;
+            background: var(--light);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+        
+        input:focus {
+            border-color: var(--primary);
+        }
+        
+        .btn {
+            padding: 14px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5a7ce2;
+        }
+        
+        /* Main App Screen */
+        #app-screen {
+            display: none;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-controls {
+            display: flex;
+            align-items: center;
+        }
+        
+        .online-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .online-count i {
+            margin-right: 5px;
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c0392b;
+        }
+        
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            background: var(--light);
+            border-bottom: 1px solid #e0e5ff;
+        }
+        
+        .nav-tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            flex: 1;
+            text-align: center;
+        }
+        
+        .nav-tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .nav-tab i {
+            margin-right: 8px;
+        }
+        
+        .screen {
+            display: none;
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            flex-direction: column;
+        }
+        
+        .active-screen {
+            display: flex;
+        }
+        
+        /* Chat Screen */
+        .chat-header {
+            padding: 15px 20px;
+            background: var(--light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e0e5ff;
+        }
+        
+        .chat-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .unread-indicator {
+            background: var(--danger);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: white;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .message-header {
+            display: flex;
+            margin-bottom: 5px;
+        }
+        
+        .sender {
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .timestamp {
+            font-size: 12px;
+            color: var(--gray);
+            margin-left: 10px;
+        }
+        
+        .message-content {
+            background: #f0f4ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            max-width: 80%;
+            align-self: flex-start;
+        }
+        
+        .my-message .message-content {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+        }
+        
+        .unread-message {
+            border-left: 3px solid var(--danger);
+            padding-left: 5px;
+        }
+        
+        .chat-input {
+            padding: 15px;
+            background: var(--light);
+            display: flex;
+            border-top: 1px solid #e0e5ff;
+        }
+        
+        .chat-input input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        
+        /* User List Screen */
+        .user-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+        
+        .user-list-title {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: var(--dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            margin-right: 12px;
+        }
+        
+        .user-info {
+            flex: 1;
+        }
+        
+        .user-name {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .user-email {
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .user-status-indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--success);
+        }
+        
+        .user-status-offline {
+            background: var(--gray);
+        }
+        
+        /* Profile Screen */
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            font-weight: 600;
+            margin: 0 auto 15px;
+        }
+        
+        .profile-name {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .profile-email {
+            color: var(--gray);
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .profile-actions {
+            margin-top: 30px;
+        }
+        
+        .notification {
+            padding: 10px;
+            margin: 10px 0;
+            background: #e7f5ff;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            color: var(--info);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                height: 95vh;
+            }
+            
+            .nav-tab span {
+                display: none;
+            }
+            
+            .nav-tab i {
+                margin-right: 0;
+                font-size: 20px;
+            }
+            
+            .chat-input {
+                flex-direction: column;
+            }
+            
+            .chat-input input {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Screen -->
+        <div id="login-screen">
+            <div class="login-header">
+                <div class="logo"><i class="fas fa-comments"></i> ChatRoom Pro</div>
+                <div class="tagline">Connect and chat with just your email</div>
+            </div>
+            
+            <div class="login-form">
+                <div class="form-group">
+                    <label for="email">Your Email</label>
+                    <input type="email" id="email" placeholder="Enter your email" value="16txtxxn@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" value="password123">
+                </div>
+                
+                <button class="btn btn-primary" id="login-btn"><i class="fas fa-sign-in-alt"></i> Login to Chat</button>
+            </div>
+        </div>
+        
+        <!-- Main App Screen (initially hidden) -->
+        <div id="app-screen">
+            <header>
+                <div class="logo"><i class="fas fa-comments"></i> ChatRoom Pro</div>
+                <div class="header-controls">
+                    <div class="online-count"><i class="fas fa-users"></i> <span id="online-count">12</span> online</div>
+                    <button class="btn btn-danger" id="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </header>
+            
+            <div class="nav-tabs">
+                <div class="nav-tab active" data-screen="chat-screen"><i class="fas fa-comment"></i> <span>Chat</span></div>
+                <div class="nav-tab" data-screen="user-list-screen"><i class="fas fa-users"></i> <span>Online Users</span></div>
+                <div class="nav-tab" data-screen="profile-screen"><i class="fas fa-user"></i> <span>My Profile</span></div>
+            </div>
+            
+            <div class="main-content">
+                <!-- Chat Screen -->
+                <div class="screen active-screen" id="chat-screen">
+                    <div class="chat-header">
+                        <div class="chat-title">General Chat</div>
+                        <div class="unread-indicator"><i class="fas fa-bell"></i> <span id="unread-count">3</span> unread</div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chat-messages">
+                        <div class="notification">
+                            Welcome to ChatRoom Pro! You are now connected to the chat.
+                        </div>
+                        
+                        <div class="message">
+                            <div class="message-header">
+                                <span class="sender">Alex Johnson</span>
+                                <span class="timestamp">2:30 PM</span>
+                            </div>
+                            <div class="message-content">
+                                Hey everyone! How's it going?
+                            </div>
+                        </div>
+                        
+                        <div class="message">
+                            <div class="message-header">
+                                <span class="sender">Maria Garcia</span>
+                                <span class="timestamp">2:32 PM</span>
+                            </div>
+                            <div class="message-content">
+                                Doing great! Just finished my work for the day.
+                            </div>
+                        </div>
+                        
+                        <div class="message unread-message">
+                            <div class="message-header">
+                                <span class="sender">Sam Wilson</span>
+                                <span class="timestamp">2:35 PM</span>
+                            </div>
+                            <div class="message-content">
+                                Has anyone tried the new restaurant downtown?
+                            </div>
+                        </div>
+                        
+                        <div class="message unread-message">
+                            <div class="message-header">
+                                <span class="sender">Taylor Kim</span>
+                                <span class="timestamp">2:36 PM</span>
+                            </div>
+                            <div class="message-content">
+                                Yes, it's amazing! Highly recommend the pasta.
+                            </div>
+                        </div>
+                        
+                        <div class="message unread-message">
+                            <div class="message-header">
+                                <span class="sender">Jordan Lee</span>
+                                <span class="timestamp">2:38 PM</span>
+                            </div>
+                            <div class="message-content">
+                                I'll have to check it out this weekend.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-input">
+                        <input type="text" id="message-input" placeholder="Type your message...">
+                        <button class="btn btn-primary" id="send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+                    </div>
+                </div>
+                
+                <!-- Online Users Screen -->
+                <div class="screen" id="user-list-screen">
+                    <div class="user-list-title">
+                        Online Users <span id="online-users-count">5</span>
+                    </div>
+                    
+                    <div class="user-list">
+                        <div class="user-item">
+                            <div class="user-avatar">A</div>
+                            <div class="user-info">
+                                <div class="user-name">Alex Johnson</div>
+                                <div class="user-email">alex@example.com</div>
+                            </div>
+                            <div class="user-status-indicator"></div>
+                        </div>
+                        
+                        <div class="user-item">
+                            <div class="user-avatar">M</div>
+                            <div class="user-info">
+                                <div class="user-name">Maria Garcia</div>
+                                <div class="user-email">maria@example.com</div>
+                            </div>
+                            <div class="user-status-indicator"></div>
+                        </div>
+                        
+                        <div class="user-item">
+                            <div class="user-avatar">S</div>
+                            <div class="user-info">
+                                <div class="user-name">Sam Wilson</div>
+                                <div class="user-email">sam@example.com</div>
+                            </div>
+                            <div class="user-status-indicator"></div>
+                        </div>
+                        
+                        <div class="user-item">
+                            <div class="user-avatar">T</div>
+                            <div class="user-info">
+                                <div class="user-name">Taylor Kim</div>
+                                <div class="user-email">taylor@example.com</div>
+                            </div>
+                            <div class="user-status-indicator"></div>
+                        </div>
+                        
+                        <div class="user-item">
+                            <div class="user-avatar">J</div>
+                            <div class="user-info">
+                                <div class="user-name">Jordan Lee</div>
+                                <div class="user-email">jordan@example.com</div>
+                            </div>
+                            <div class="user-status-indicator"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Profile Screen -->
+                <div class="screen" id="profile-screen">
+                    <div class="profile-header">
+                        <div class="profile-avatar">U</div>
+                        <div class="profile-name">User Name</div>
+                        <div class="profile-email">16txtxxn@gmail.com</div>
+                    </div>
+                    
+                    <div class="profile-stats">
+                        <div class="stat">
+                            <div class="stat-value">128</div>
+                            <div class="stat-label">Messages Sent</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">24</div>
+                            <div class="stat-label">Days Active</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">Friends</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="display-name">Display Name</label>
+                        <input type="text" id="display-name" placeholder="Enter your display name" value="User Name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="status-message">Status Message</label>
+                        <input type="text" id="status-message" placeholder="Enter your status message" value="Hello! I'm using ChatRoom Pro">
+                    </div>
+                    
+                    <div class="profile-actions">
+                        <button class="btn btn-primary"><i class="fas fa-save"></i> Save Changes</button>
+                        <button class="btn btn-danger"><i class="fas fa-trash"></i> Delete Account</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const loginBtn = document.getElementById('login-btn');
+            const logoutBtn = document.getElementById('logout-btn');
+            const messageInput = document.getElementById('message-input');
+            const sendBtn = document.getElementById('send-btn');
+            const chatMessages = document.getElementById('chat-messages');
+            const onlineCountSpan = document.getElementById('online-count');
+            const unreadCountSpan = document.getElementById('unread-count');
+            const loginScreen = document.getElementById('login-screen');
+            const appScreen = document.getElementById('app-screen');
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const screens = document.querySelectorAll('.screen');
+            
+            let currentUser = null;
+            let onlineCount = 12;
+            let unreadCount = 3;
+            
+            // Login functionality
+            loginBtn.addEventListener('click', function() {
+                const email = emailInput.value.trim();
+                const password = passwordInput.value.trim();
+                
+                if (!validateEmail(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                if (password.length < 6) {
+                    alert('Password must be at least 6 characters long');
+                    return;
+                }
+                
+                currentUser = {
+                    email: email,
+                    name: email.split('@')[0]
+                };
+                
+                // Switch to app screen
+                loginScreen.style.display = 'none';
+                appScreen.style.display = 'flex';
+                
+                // Show welcome message
+                addMessage('ChatBot', 'Welcome to ChatRoom Pro! You are now connected.', 'Just now', false, true);
+            });
+            
+            // Logout functionality
+            logoutBtn.addEventListener('click', function() {
+                // Switch to login screen
+                appScreen.style.display = 'none';
+                loginScreen.style.display = 'flex';
+                
+                // Add logout message
+                addMessage('ChatBot', `${currentUser.name} has left the chat.`, 'Just now', false, true);
+                
+                currentUser = null;
+            });
+            
+            // Navigation tabs
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Hide all screens
+                    screens.forEach(screen => {
+                        screen.classList.remove('active-screen');
+                    });
+                    
+                    // Show selected screen
+                    const screenId = this.getAttribute('data-screen');
+                    document.getElementById(screenId).classList.add('active-screen');
+                    
+                    // If chat screen is selected, mark messages as read
+                    if (screenId === 'chat-screen') {
+                        markAllAsRead();
+                    }
+                });
+            });
+            
+            // Send message functionality
+            sendBtn.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+            
+            function sendMessage() {
+                const content = messageInput.value.trim();
+                
+                if (content === '') return;
+                
+                // Add message to chat
+                addMessage(currentUser.name, content, new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), true, true);
+                
+                // Clear input
+                messageInput.value = '';
+                
+                // Simulate responses
+                simulateResponse();
+            }
+            
+            function addMessage(sender, content, timestamp, isMyMessage, isRead) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = isMyMessage ? 'message my-message' : 'message';
+                
+                if (!isRead && !isMyMessage) {
+                    messageDiv.classList.add('unread-message');
+                    unreadCount++;
+                    unreadCountSpan.textContent = unreadCount;
+                }
+                
+                messageDiv.innerHTML = `
+                    <div class="message-header">
+                        <span class="sender">${sender}</span>
+                        <span class="timestamp">${timestamp}</span>
+                    </div>
+                    <div class="message-content">
+                        ${content}
+                    </div>
+                `;
+                
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            function markAllAsRead() {
+                unreadCount = 0;
+                unreadCountSpan.textContent = unreadCount;
+                
+                // Remove unread styling
+                document.querySelectorAll('.unread-message').forEach(el => {
+                    el.classList.remove('unread-message');
+                });
+            }
+            
+            function simulateResponse() {
+                const responses = [
+                    {sender: 'Alex Johnson', content: "Nice message!", delay: 2000},
+                    {sender: 'Maria Garcia', content: "I agree with that.", delay: 3000},
+                    {sender: 'Sam Wilson', content: "Does anyone want to discuss the latest news?", delay: 4000}
+                ];
+                
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                
+                setTimeout(() => {
+                    addMessage(response.sender, response.content, new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), false, false);
+                }, response.delay);
+            }
+            
+            function validateEmail(email) {
+                const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
+            }
+            
+            // Simulate receiving occasional messages
+            setInterval(() => {
+                if (!currentUser) return;
+                
+                const randomSenders = ['Alex Johnson', 'Maria Garcia', 'Sam Wilson', 'Taylor Kim', 'Jordan Lee'];
+                const randomMessages = [
+                    "Hello there!",
+                    "What's everyone up to?",
+                    "Has anyone seen the latest movie?",
+                    "I'm learning web development, it's really fun!",
+                    "The weather is beautiful today!",
+                    "Any plans for the weekend?"
+                ];
+                
+                if (Math.random() > 0.7) {
+                    const sender = randomSenders[Math.floor(Math.random() * randomSenders.length)];
+                    const content = randomMessages[Math.floor(Math.random() * randomMessages.length)];
+                    
+                    addMessage(sender, content, new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}), false, false);
+                }
+            }, 10000);
+        });
+    </script>
+</body>
+  </html>
